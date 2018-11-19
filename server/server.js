@@ -34,9 +34,7 @@ app.get('/todos', (req, res) => {
 app.get('/todos/:id', (req, res) => {
   const id = req.params.id
   
-  if(!ObjectID.isValid(id)) {
-    return res.status(404).send()
-  }
+  idValidation(id, res)
 
   Todo.findById(id).then((todo) => {
     if (!todo) return res.status(404).send()
@@ -46,8 +44,29 @@ app.get('/todos/:id', (req, res) => {
   })
 })
 
+app.delete('/todos/:id', (req, res) => {
+  const id = req.params.id
+
+  idValidation(id, res)
+
+  Todo.findByIdAndDelete(id).then((todo) => {
+    if (!todo) {
+      return res.status(404).send()
+    }
+    res.send({todo})
+  }).catch((e) => {
+    res.status(400).send()
+  })
+})
+
 app.listen(port, () => {
   console.log(`Starting at port ${port}`)
 })
+
+function idValidation(id, res) {
+  if(!ObjectID.isValid(id)) {
+    return res.status(404).send()
+  }
+}
 
 module.exports = { app }
