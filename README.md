@@ -1,1 +1,1 @@
-# node-todo
+# node-todo-api
